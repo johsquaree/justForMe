@@ -8,9 +8,6 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-// MQTTClient represents the MQTT client used for communication.
-var MQTTClient mqtt.Client
-
 // connectHandler is a callback function called upon successful MQTT connection.
 func connectHandler(client mqtt.Client) {
 	fmt.Println("Connected")
@@ -78,14 +75,4 @@ func sendPayloadToHTTPChannel(payload []byte) {
 	if resp.StatusCode != http.StatusOK {
 		fmt.Printf("HTTP request failed with status code: %d\n", resp.StatusCode)
 	}
-}
-
-func main() {
-	InitializeMQTTClient()
-	token := MQTTClient.Subscribe("/movement", byte(2), func(client mqtt.Client, message mqtt.Message) {
-		fmt.Printf("Received message on topic %s: %s\n", message.Topic(), message.Payload())
-	})
-	token.Wait()
-
-	Publish("forward")
 }
